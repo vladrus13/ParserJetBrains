@@ -5,7 +5,4 @@ public class BracketBalanceException extends ParsingException {
         super(s);
     }
 
-    public BracketBalanceException(String s, Exception e) {
-        super(s, e);
-    }
 }

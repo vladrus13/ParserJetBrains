@@ -5,7 +5,4 @@ public class ParsingException extends Exception {
         super("Parsing exception: \n" + s);
     }
 
-    public ParsingException(String s, Exception e) {
-        super("Parsing exception: \n" + s, e);
-    }
 }

@@ -5,7 +5,4 @@ public class WrongParamException extends ParsingException {
         super(s);
     }
 
-    public WrongParamException(String s, Exception e) {
-        super(s, e);
-    }
 }

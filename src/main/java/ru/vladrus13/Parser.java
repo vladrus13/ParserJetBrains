@@ -19,7 +19,7 @@ public class Parser {
     private BigInteger value = BigInteger.ZERO;
     private int balance = 0;
     private Token current;
-    private Set<Token> operators = EnumSet.of(Token.ADD, Token.MULTIPLY, Token.SUBTRACT, Token.AND, Token.OR, Token.EQUALS, Token.MORE, Token.LESS);
+    private final Set<Token> operators = EnumSet.of(Token.ADD, Token.MULTIPLY, Token.SUBTRACT, Token.AND, Token.OR, Token.EQUALS, Token.MORE, Token.LESS);
 
     private void skipSpaces() {
         while (index < data.length() && Character.isWhitespace(data.charAt(index))) {
@@ -39,21 +39,24 @@ public class Parser {
         }
     }
 
-    private Token nextToken() throws ParsingException {
+    private void nextToken() throws ParsingException {
         skipSpaces();
         if (index >= data.length()) {
             checkOperator();
-            return current = Token.END;
+            current = Token.END;
+            return;
         }
         char currentCharacter = data.charAt(index);
         index++;
         switch (currentCharacter) {
             case '+':
                 checkOperator();
-                return current = Token.ADD;
+                current = Token.ADD;
+                return;
             case '-':
                 if (current == Token.VARIABLE || current == Token.CONST || current == Token.CLOSE_BRACKET) {
-                    return current = Token.SUBTRACT;
+                    current = Token.SUBTRACT;
+                    return;
                 } else {
                     if (index >= data.length()) {
                         throw new MissingOperatorException("No value after minus. \n\tPosition at line: " + index);
@@ -64,33 +67,42 @@ public class Parser {
                             index++;
                         }
                         value = new BigInteger(data.substring(beginIndex, index));
-                        return current = Token.CONST;
+                        current = Token.CONST;
+                        return;
                     } else {
-                        return current = Token.NEGATE;
+                        current = Token.NEGATE;
+                        return;
                     }
                 }
             case '*':
                 checkOperator();
-                return current = Token.MULTIPLY;
+                current = Token.MULTIPLY;
+                return;
             case '&':
                 checkOperator();
-                return current = Token.AND;
+                current = Token.AND;
+                return;
             case '|':
                 checkOperator();
-                return current = Token.OR;
+                current = Token.OR;
+                return;
             case '=':
                 checkOperator();
-                return current = Token.EQUALS;
+                current = Token.EQUALS;
+                return;
             case '<':
                 checkOperator();
-                return current = Token.LESS;
+                current = Token.LESS;
+                return;
             case '>':
                 checkOperator();
-                return current = Token.MORE;
+                current = Token.MORE;
+                return;
             case '(':
                 checkOperation();
                 balance++;
-                return current = Token.OPEN_BRACKET;
+                current = Token.OPEN_BRACKET;
+                return;
             case ')':
                 if (operators.contains(current) || current == Token.OPEN_BRACKET) {
                     throw new MissingOperatorException("Operator before bracket at position: " + index);
@@ -99,7 +111,8 @@ public class Parser {
                 if (balance < 0) {
                     throw new BracketBalanceException("Negate balance at position: " + index);
                 }
-                return current = Token.CLOSE_BRACKET;
+                current = Token.CLOSE_BRACKET;
+                return;
             default:
                 if (Character.isDigit(currentCharacter)) {
                     index--;
@@ -108,7 +121,7 @@ public class Parser {
                         index++;
                     }
                     value = new BigInteger(data.substring(beginIndex, index));
-                    return current = Token.CONST;
+                    current = Token.CONST;
                 } else {
                     if (Character.isLetter(currentCharacter)) {
                         index--;
@@ -119,25 +132,26 @@ public class Parser {
                         variableName = data.substring(beginChar, index);
                         if (variableName.equals("filter")) {
                             index++;
-                            return current = Token.FILTER;
+                            current = Token.FILTER;
+                            return;
                         }
                         if (variableName.equals("map")) {
                             index++;
-                            return current = Token.MAP;
+                            current = Token.MAP;
+                            return;
                         }
                         if (variableName.equals("element")) {
-                            return current = Token.VARIABLE;
+                            current = Token.VARIABLE;
+                            return;
                         }
                         throw new UnknownOperationException("Unknown operator \"" + variableName + "\" at position: " + index);
                     } else {
                         if (currentCharacter == '}') {
                             index += 3;
-                            return Token.END;
                         }
                     }
                 }
         }
-        return Token.ERROR;
     }
 
     private Expression unary() throws ParsingException {

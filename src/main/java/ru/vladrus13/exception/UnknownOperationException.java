@@ -5,7 +5,4 @@ public class UnknownOperationException extends ParsingException {
         super(s);
     }
 
-    public UnknownOperationException(String s, Exception e) {
-        super(s, e);
-    }
 }

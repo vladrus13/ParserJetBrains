@@ -29,7 +29,7 @@ public class BinaryOperation extends Expression {
             case MORE:
             case LESS:
             case OR:
-                this.type = TYPE.VARINABLE_LOGCAL;
+                this.type = TYPE.VARIABLE_LOGICAL;
         }
     }
 

@@ -5,7 +5,4 @@ public class MissingOperatorException extends ParsingException {
         super(s);
     }
 
-    public MissingOperatorException(String s, Exception e) {
-        super(s, e);
-    }
 }
