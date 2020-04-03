@@ -4,9 +4,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class for negate expressions ("-(2 + 2)")
+ */
 public class Negate extends Expression {
     protected final Expression a;
 
+    /**
+     * Constructor of negate
+     *
+     * @param a {@link Expression}
+     */
     public Negate(Expression a) {
         this.a = a;
         type = a.type;

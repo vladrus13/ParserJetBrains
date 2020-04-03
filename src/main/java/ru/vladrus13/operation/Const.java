@@ -5,9 +5,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Special class for constants
+ */
 public class Const extends Expression {
     protected final BigInteger number;
 
+    /**
+     * Constructor of Const
+     *
+     * @param number {@link BigInteger} - constant
+     */
     public Const(BigInteger number) {
         this.number = number;
         type = TYPE.INTEGER;

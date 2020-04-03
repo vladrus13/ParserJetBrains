@@ -4,16 +4,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Special class for filter and map
+ */
 public class CallOperation extends Expression {
     protected final Expression expression;
     protected final Operation operation;
 
+    /**
+     * Constructor for filter or map
+     *
+     * @param a         {@link Expression} on filter or map
+     * @param operation type of {@link Operation}
+     */
     public CallOperation(Expression a, Operation operation) {
         this.expression = a;
         this.operation = operation;
         type = TYPE.LOGICAL;
     }
 
+    /**
+     * Get {@link Operation} of call class
+     *
+     * @return {@link} of call class
+     */
     public Operation getOperation() {
         return operation;
     }

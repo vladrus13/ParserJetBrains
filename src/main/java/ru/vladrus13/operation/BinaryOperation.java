@@ -6,10 +6,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class for binary operators
+ */
 public class BinaryOperation extends Expression {
     protected final Expression a, b;
     protected final Operation operation;
 
+    /**
+     * Constructor of BinaryOperation
+     *
+     * @param a         first {@link Expression}
+     * @param b         second {@link Expression}
+     * @param operation type of operation {@link Operation}
+     * @throws WrongParamException if we see type error, maybe, multiply logical variables
+     */
     public BinaryOperation(Expression a, Expression b, Operation operation) throws WrongParamException {
         this.a = a;
         this.b = b;
@@ -33,10 +44,16 @@ public class BinaryOperation extends Expression {
         }
     }
 
+    /**
+     * Getter for operation
+     *
+     * @return type of {@link Operation}
+     */
     public Operation getOperation() {
         return operation;
     }
 
+    @Override
     public String toString() {
         String operation;
         switch (this.operation) {

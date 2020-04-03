@@ -2,15 +2,29 @@ package ru.vladrus13.operation;
 
 import java.util.List;
 
+/**
+ * Abstract class for mono of expression
+ */
 public abstract class Expression {
+
+    /**
+     * Type of operation
+     */
     protected TYPE type;
 
-    @Override
-    public String toString() {
-        return type.toString();
-    }
+    /**
+     * Return string view of expression
+     *
+     * @return {@link String} view
+     */
+    public abstract String toString();
 
     public abstract boolean equals(Object o);
 
+    /**
+     * Get expressions
+     *
+     * @return list of expressions
+     */
     public abstract List<Expression> getExpressions();
 }

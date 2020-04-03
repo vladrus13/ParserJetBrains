@@ -21,24 +21,42 @@ public class Parser {
     private Token current;
     private final Set<Token> operators = EnumSet.of(Token.ADD, Token.MULTIPLY, Token.SUBTRACT, Token.AND, Token.OR, Token.EQUALS, Token.MORE, Token.LESS);
 
+    /**
+     * Skip useless spaces
+     */
     private void skipSpaces() {
         while (index < data.length() && Character.isWhitespace(data.charAt(index))) {
             index++;
         }
     }
 
+    /**
+     * Check for next operation
+     *
+     * @throws MissingOperatorException if we have NOT potential operation
+     */
     private void checkOperation() throws MissingOperatorException {
         if (current == Token.CLOSE_BRACKET || current == Token.VARIABLE || current == Token.CONST) {
             throw new MissingOperatorException("Start from operator at position: " + index);
         }
     }
 
+    /**
+     * Check for next operator
+     *
+     * @throws MissingOperatorException if we have NOT potential operator
+     */
     private void checkOperator() throws MissingOperatorException {
         if (operators.contains(current) || current == Token.OPEN_BRACKET) {
             throw new MissingOperatorException("Missing second value at position: " + index);
         }
     }
 
+    /**
+     * Save to current next {@link Token}.
+     *
+     * @throws ParsingException if we have some troubles with parsing.
+     */
     private void nextToken() throws ParsingException {
         skipSpaces();
         if (index >= data.length()) {
@@ -154,6 +172,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Return {@link Expression} next unary operation
+     *
+     * @return {@link Expression} next unary operation
+     * @throws ParsingException if we have some troubles with parsing (maybe, unknown operator or problem with brackets)
+     */
     private Expression unary() throws ParsingException {
         nextToken();
         Expression returned;
@@ -185,6 +209,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Return multiply or higher level operation
+     *
+     * @return multiply or higher level {@link Expression}
+     * @throws ParsingException if we have some troubles with parsing
+     */
     private Expression multi() throws ParsingException {
         Expression returned = unary();
         while (true) {
@@ -196,6 +226,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Return add or subtract or higher level operation
+     *
+     * @return add or subtract or higher level {@link Expression}
+     * @throws ParsingException if we have some troubles with parsing
+     */
     private Expression addSub() throws ParsingException {
         Expression returned = multi();
         while (true) {
@@ -212,6 +248,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Return and, or, more, equals or higher level operation
+     *
+     * @return and, or, more, equals or higher level {@link Expression}
+     * @throws ParsingException if we have some troubles with parsing
+     */
     private Expression andOrMoreEqualsLess() throws ParsingException {
         Expression returned = addSub();
         while (true) {
@@ -237,6 +279,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Return {@link ArrayList} of {@link CallOperation} parse
+     *
+     * @param in {@link String} for parsing
+     * @return {@link ArrayList} of parsing {@link CallOperation}
+     * @throws ParsingException if we get some troubles on parsing
+     */
     public ArrayList<CallOperation> parse(String in) throws ParsingException {
         index = 0;
         data = in;
@@ -254,6 +303,9 @@ public class Parser {
         return expressions;
     }
 
+    /**
+     * Token for successfully parsing strings
+     */
     private enum Token {
         ADD, CLOSE_BRACKET, OPEN_BRACKET, MULTIPLY, SUBTRACT, CONST, VARIABLE, END, FILTER, MAP, AND, OR, EQUALS, MORE, LESS, ERROR, NEGATE
     }

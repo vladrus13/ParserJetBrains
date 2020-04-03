@@ -9,8 +9,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Class for simplify {@link Expression}
+ */
 public class Simplifier {
 
+    /**
+     * Replace all variables in first arg on second
+     *
+     * @param in        where we replace
+     * @param replacing to what we replave
+     * @return right {@link Expression}
+     * @throws WrongParamException if replace not successful
+     */
     private Expression replaceAllVariables(Expression in, Expression replacing) throws WrongParamException {
         if (in instanceof Variable) return replacing;
         if (in instanceof Negate) {
@@ -23,18 +34,50 @@ public class Simplifier {
         return in;
     }
 
+    /**
+     * Simplify pair of map and map
+     *
+     * @param a {@link CallOperation} and have {@link Operation} map
+     * @param b {@link CallOperation} and have {@link Operation} map
+     * @return list of one argument - simplifying {@link CallOperation}
+     * @throws WrongParamException if we get replace bad
+     */
     private List<CallOperation> simplifyMapAndMap(CallOperation a, CallOperation b) throws WrongParamException {
         return Collections.singletonList(new CallOperation(replaceAllVariables(b.getExpressions().get(0), a.getExpressions().get(0)), Operation.MAP));
     }
 
+    /**
+     * Simplify pair of map and filter
+     *
+     * @param a {@link CallOperation} and have {@link Operation} map
+     * @param b {@link CallOperation} and have {@link Operation} filter
+     * @return list of two argument (filter and map) - simplifying {@link CallOperation}
+     * @throws WrongParamException if we get replace bad
+     */
     private List<CallOperation> simplifyMapAndFilter(CallOperation a, CallOperation b) throws WrongParamException {
         return Arrays.asList(new CallOperation(replaceAllVariables(b.getExpressions().get(0), a.getExpressions().get(0)), Operation.FILTER), a);
     }
 
+    /**
+     * Simplify pair of filter and filter
+     *
+     * @param a {@link CallOperation} and have {@link Operation} filter
+     * @param b {@link CallOperation} and have {@link Operation} filter
+     * @return list of one argument - simplifying {@link CallOperation}
+     * @throws WrongParamException if we get replace bad
+     */
     private List<CallOperation> simplifyFilterAndFilter(CallOperation a, CallOperation b) throws WrongParamException {
         return Collections.singletonList(new CallOperation(new BinaryOperation(a.getExpressions().get(0), b.getExpressions().get(0), Operation.AND), Operation.FILTER));
     }
 
+    /**
+     * Simplify pair of {@link CallOperation}
+     *
+     * @param a {@link CallOperation}
+     * @param b {@link CallOperation}
+     * @return list of simplifying {@link CallOperation}
+     * @throws WrongParamException if we get replace bad
+     */
     private List<CallOperation> simplify(CallOperation a, CallOperation b) throws WrongParamException {
         if (a.getOperation() == Operation.MAP && b.getOperation() == Operation.MAP) {
             return simplifyMapAndMap(a, b);
@@ -48,6 +91,12 @@ public class Simplifier {
         return Arrays.asList(a, b);
     }
 
+    /**
+     * Checks, is list simplified
+     *
+     * @param list {@link List} which we check
+     * @return result of check
+     */
     private boolean isSimplified(List<CallOperation> list) {
         if (list.size() > 2) return false;
         if (list.size() == 2) {
@@ -56,6 +105,13 @@ public class Simplifier {
         return true;
     }
 
+    /**
+     * Simplify list of {@link CallOperation}, which we simplify
+     *
+     * @param list list which we check
+     * @return list of two elements - filter and map
+     * @throws WrongParamException if we get replace bad
+     */
     public List<CallOperation> simplify(List<CallOperation> list) throws WrongParamException {
         List<CallOperation> newList = list;
         while (!isSimplified(newList)) {
