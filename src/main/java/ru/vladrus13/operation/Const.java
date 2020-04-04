@@ -11,6 +11,10 @@ import java.util.Objects;
 public class Const extends Expression {
     protected final BigInteger number;
 
+    public BigInteger getNumber() {
+        return number;
+    }
+
     /**
      * Constructor of Const
      *

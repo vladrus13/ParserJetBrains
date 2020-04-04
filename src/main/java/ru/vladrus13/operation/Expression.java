@@ -17,8 +17,10 @@ public abstract class Expression {
      *
      * @return {@link String} view
      */
+    @Override
     public abstract String toString();
 
+    @Override
     public abstract boolean equals(Object o);
 
     /**
@@ -27,4 +29,5 @@ public abstract class Expression {
      * @return list of expressions
      */
     public abstract List<Expression> getExpressions();
+
 }

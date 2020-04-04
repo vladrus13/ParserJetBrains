@@ -15,10 +15,58 @@ import java.util.List;
 public class Simplifier {
 
     /**
+     * Try to simplify expression
+     *
+     * @param expression input {@link Expression}
+     * @return simplified {@link Expression}
+     * @throws WrongParamException if we got something bad until simplifying
+     */
+    private Expression recursiveSimplifier(Expression expression) throws WrongParamException {
+        if (expression instanceof BinaryOperation) {
+            Expression newFirst = recursiveSimplifier(expression.getExpressions().get(0));
+            Expression newSecond = recursiveSimplifier(expression.getExpressions().get(1));
+            if (newFirst instanceof Const && newSecond instanceof Const) {
+                switch (((BinaryOperation) expression).getOperation()) {
+                    case SUBTRACT:
+                        return new Const(((Const) newFirst).getNumber().subtract(((Const) newSecond).getNumber()));
+                    case MULTIPLY:
+                        return new Const(((Const) newFirst).getNumber().multiply(((Const) newSecond).getNumber()));
+                    case ADD:
+                        return new Const(((Const) newFirst).getNumber().add(((Const) newSecond).getNumber()));
+                    default:
+                        return new BinaryOperation(newFirst, newSecond, ((BinaryOperation) expression).getOperation());
+                }
+            } else {
+                return new BinaryOperation(newFirst, newSecond, ((BinaryOperation) expression).getOperation());
+            }
+        }
+        if (expression instanceof Negate) {
+            Expression newExpression = recursiveSimplifier(expression.getExpressions().get(0));
+            if (newExpression instanceof Const) {
+                return new Const(((Const) newExpression).getNumber());
+            }
+            return newExpression;
+        }
+        // if (expression instanceof Variable || expression instanceof Const) {
+        return expression;
+    }
+
+    /**
+     * Try to simplify {@link CallOperation}
+     *
+     * @param callOperation input {@link CallOperation}
+     * @return simplified {@link CallOperation}
+     * @throws WrongParamException if we got something bad until simplifying
+     */
+    private CallOperation recursiveSimplifier(CallOperation callOperation) throws WrongParamException {
+        return new CallOperation(recursiveSimplifier(callOperation.getExpressions().get(0)), callOperation.getOperation());
+    }
+
+    /**
      * Replace all variables in first arg on second
      *
      * @param in        where we replace
-     * @param replacing to what we replave
+     * @param replacing to what we replace
      * @return right {@link Expression}
      * @throws WrongParamException if replace not successful
      */
@@ -138,6 +186,8 @@ public class Simplifier {
                 newList.add(new CallOperation(new Variable("element"), Operation.MAP));
             }
         }
+        newList.set(0, recursiveSimplifier(newList.get(0)));
+        newList.set(1, recursiveSimplifier(newList.get(1)));
         return newList;
     }
 }

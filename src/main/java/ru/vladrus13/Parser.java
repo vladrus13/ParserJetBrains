@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * Class for parse strings to {@link Expression} view
+ */
 public class Parser {
 
     private String variableName;
